@@ -5,7 +5,7 @@ import 'package:demo_dependency_injection/models/videos_response.dart';
 import 'package:demo_dependency_injection/services/video_service.dart';
 import 'package:demo_dependency_injection/services/video_service.dart';
 import 'package:injectable/injectable.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class IVideosRepository {
   Future<UseCaseResult<VideosResponse>> getVideos();
@@ -33,12 +33,19 @@ class MockVideosRepository implements IVideosRepository {
 @Injectable(as: IVideosRepository)
 class VideosRepository implements IVideosRepository {
   final VideoService _videoService;
+  final SharedPreferences _prefs;
 
-  VideosRepository({required VideoService videoService}) : _videoService = videoService;
+  VideosRepository({
+    required VideoService videoService,
+    required SharedPreferences prefs,
+  })  : _videoService = videoService,
+        _prefs = prefs;
 
   @override
   Future<UseCaseResult<VideosResponse>> getVideos() async {
     await Future.delayed(const Duration(seconds: 1));
+    _prefs.setString("TEST", "SharedPreferences content is available.");
+
     var response = await _videoService.getVideos();
     if (response.isSuccessful) {
       return Future.value(UseCaseResult.success(response.body!));

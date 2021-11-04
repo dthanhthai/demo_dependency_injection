@@ -10,10 +10,10 @@ import 'di/injection.dart';
 import 'home.dart';
 import 'models/video.dart';
 
-void main() {
+void main() async {
   _setupLogging();
   WidgetsFlutterBinding.ensureInitialized();
-  configureDependencies();
+  await configureDependencies();
   runApp(const MyApp());
 }
 
